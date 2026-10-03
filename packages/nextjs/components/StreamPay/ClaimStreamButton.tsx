@@ -21,6 +21,7 @@ const ROUTER_ABI = [
 export const ClaimStreamButton = ({ planId, claimable }: { planId: bigint, claimable?: bigint }) => {
   const [swapToHBAR, setSwapToHBAR] = useState(false);
   
+  const { address } = useAccount();
   const { claim, isPending, isConfirming } = usePayrollVaultWrite();
 
   const USDC = "0x0000000000000000000000000000000000001549";
@@ -57,7 +58,7 @@ export const ClaimStreamButton = ({ planId, claimable }: { planId: bigint, claim
           method: "POST",
           body: JSON.stringify({
             planId: planId.toString(),
-            employee: "Employee",
+            employee: address || "Unknown",
             amount: amountIn.toString(),
             txHash: tx,
           }),
