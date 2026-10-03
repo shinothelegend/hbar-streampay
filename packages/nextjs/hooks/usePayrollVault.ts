@@ -65,6 +65,7 @@ export function usePayrollVaultWrite() {
   };
 
   const claim = async (planId: bigint, swapToHBAR: boolean, amountOutMin: bigint) => {
+    if (!PAYROLL_VAULT_ADDRESS) throw new Error("Vault not configured");
     return writeContractAsync({
       address: PAYROLL_VAULT_ADDRESS,
       abi: payrollVaultABI,
