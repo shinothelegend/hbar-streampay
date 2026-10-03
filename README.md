@@ -4,7 +4,7 @@
 > - **Smart Contract:** [0.0.10840783](https://hashscan.io/testnet/contract/0.0.10840783)
 > - **Seed Transfer (Fund):** [View Transaction](https://hashscan.io/testnet/transaction/0x722cc08050bd641bf754306f83d3f948208ebb634ee588c9d057af52e5da58be)
 > - **Salary Claim:** [View USDC Claim](https://hashscan.io/testnet/transaction/0x5db5f99d17208424b7d7b7f9b97311ee7a5bed85b6fffd7a99207b57a64d7858)
-> - **HCS Topic:** [0.0.10840759](https://hashscan.io/testnet/topic/0.0.10840759)
+> - **HCS Topic Message:** [View Topic Message](https://hashscan.io/testnet/transaction/0.0.10469716-1791025581-655739693)
 
 StreamPay is a non-custodial, on-chain streaming payroll application on Hedera. Employers fund salary streams denominated in a stablecoin (USDC). Employees accrue their salary linearly every second and can claim it at any time. When claiming, employees can choose to receive the native stablecoin or automatically convert it to HBAR via the SaucerSwap V1 Router. Every claim generates an immutable receipt on the Hedera Consensus Service (HCS), providing a verifiable payroll audit trail.
 

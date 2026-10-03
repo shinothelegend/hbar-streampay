@@ -23,4 +23,4 @@ All links point to Hashscan on the Hedera Testnet.
 ## 5. HCS Audit Trail Receipt
 - **Topic ID:** `0.0.10840759`
 - **Action:** Next.js backend submits the claim receipt to the HCS topic.
-- **Hashscan Link (Topic Message):** *(User will execute via UI testing)*
+- **Hashscan Link (Topic Message):** `https://hashscan.io/testnet/transaction/0.0.10469716-1791025581-655739693`
