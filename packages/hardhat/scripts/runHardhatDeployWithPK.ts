@@ -12,7 +12,12 @@ async function main() {
   const networkIndex = process.argv.indexOf("--network");
   const networkName = networkIndex !== -1 ? process.argv[networkIndex + 1] : config.defaultNetwork;
 
-  const args = process.argv.slice(2).filter(a => a !== "localhost" && a !== "hardhat");
+  let args = process.argv.slice(2);
+  const netIdx = args.indexOf("--network");
+  if (netIdx !== -1) {
+    args.splice(netIdx, 2);
+  }
+  args = args.filter(a => a !== "localhost" && a !== "hardhat");
 
   if (networkName === "localhost" || networkName === "hardhat") {
     // Deploy command on the localhost network
