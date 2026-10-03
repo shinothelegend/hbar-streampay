@@ -14,7 +14,15 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-  globalIgnores(["**/artifacts", "**/cache", "**/contracts", "**/node_modules/", "**/typechain-types", "**/*.json"]),
+  globalIgnores([
+    "**/artifacts",
+    "**/cache",
+    "**/contracts",
+    "**/node_modules/",
+    "**/typechain-types",
+    "**/*.json",
+    "**/scripts",
+  ]),
   {
     extends: compat.extends("plugin:@typescript-eslint/recommended", "prettier"),
 
