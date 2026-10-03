@@ -24,13 +24,13 @@ flowchart TD
 
 1. Scaffold the template:
 ```bash
-npx create-scaffold-hbar@latest --template your-org/hbar-streampay
+npm create scaffold-hbar@latest -- --template shinothelegend/hbar-streampay
 ```
 
 2. Enter the directory and install dependencies:
 ```bash
 cd hbar-streampay
-yarn install
+npm install
 ```
 
 3. Setup environment variables:
@@ -42,12 +42,12 @@ Edit both `.env` files with your testnet private keys (see below).
 
 4. Deploy the contracts and seed demo accounts:
 ```bash
-yarn workspace @sh/hardhat deploy --network testnet
+npm run hardhat:deploy -- --network hederaTestnet
 ```
 
 5. Start the frontend:
 ```bash
-yarn workspace @sh/nextjs dev
+npm run next:dev
 ```
 
 ## Environment Variables
@@ -57,7 +57,7 @@ yarn workspace @sh/nextjs dev
 | `DEPLOYER_PRIVATE_KEY_ENCRYPTED` | Optional encrypted deployer key. | Scaffold-HBAR `account:generate` script. |
 | `HEDERA_OPERATOR_ID` | Testnet Account ID (e.g., `0.0.1234`) | Hedera Portal |
 | `HEDERA_OPERATOR_KEY` | ECDSA Private Key for NextJS API to submit HCS messages | Hedera Portal |
-| `NEXT_PUBLIC_HCS_RECEIPT_TOPIC_ID` | The ID of the HCS topic used for receipts | Run `npm run hcs:create-topic` (if script available) or create manually |
+| `NEXT_PUBLIC_HCS_RECEIPT_TOPIC_ID` | The ID of the HCS topic used for receipts | Run `npm run hardhat:create-topic` or create manually |
 
 ## Hedera Services Integration
 
@@ -83,5 +83,5 @@ All operations run flawlessly on the Hedera Testnet. See `docs/TESTNET_EVIDENCE.
 
 To run the local contract tests:
 ```bash
-yarn workspace @sh/hardhat test
+npm run hardhat:test
 ```

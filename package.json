@@ -10,6 +10,7 @@
   },
   "scripts": {
     "format": "npm run next:format -- && npm run hardhat:format --",
+    "hardhat:create-topic": "node packages/hardhat/scripts/hcsCreateTopic.js",
     "hardhat:account": "npm run account -w @sh/hardhat --",
     "hardhat:account:generate": "npm run account:generate -w @sh/hardhat --",
     "hardhat:account:import": "npm run account:import -w @sh/hardhat --",

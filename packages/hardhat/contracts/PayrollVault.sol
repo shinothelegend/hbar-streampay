@@ -15,7 +15,6 @@ contract PayrollVault {
     error PlanAlreadyCancelled();
     error PlanNotActive();
     error NothingAccrued();
-    error SlippageExceeded();
     error AssociationFailed();
     error TransferFailed();
 
@@ -36,6 +35,7 @@ contract PayrollVault {
 
     address public immutable WHBAR;
     ISaucerSwapV1Router public immutable saucerSwapRouter;
+    uint256 public constant SWAP_DEADLINE_SECONDS = 300;
 
     event PlanCreated(uint256 indexed planId, address indexed employer, address indexed employee, address token, uint96 ratePerSec, uint64 duration);
     event Funded(uint256 indexed planId, uint256 amount);
@@ -75,8 +75,6 @@ contract PayrollVault {
         plan.token = token;
         plan.ratePerSec = ratePerSec;
         
-        // Start time is not set until funded? Or set now? 
-        // Let's set startTime and endTime when created.
         plan.startTime = uint64(block.timestamp);
         plan.endTime = uint64(block.timestamp) + duration;
         plan.cancelled = false;
@@ -144,9 +142,9 @@ contract PayrollVault {
                 amountOutMin,
                 path,
                 msg.sender,
-                block.timestamp + 120 // 2 minutes deadline
+                block.timestamp + SWAP_DEADLINE_SECONDS
             );
-            hbarOut = amounts[1];
+            hbarOut = amounts[amounts.length - 1];
             
             // Clear allowance
             IERC20Minimal(plan.token).approve(address(saucerSwapRouter), 0);

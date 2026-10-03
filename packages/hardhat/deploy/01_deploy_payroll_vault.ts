@@ -3,13 +3,9 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { HEDERA_TESTNET } from "../config/hedera-testnet";
 
 async function getEvmAddress(hederaId: string): Promise<string> {
-  const url = `https://testnet.mirrornode.hedera.com/api/v1/contracts/${hederaId}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch EVM address for ${hederaId}`);
-  }
-  const data = await response.json();
-  return data.evm_address;
+  const parts = hederaId.split(".");
+  const num = BigInt(parts[2]);
+  return "0x" + num.toString(16).padStart(40, "0");
 }
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
