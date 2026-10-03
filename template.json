@@ -1,0 +1,7 @@
+{
+  "name": "hbar-streampay",
+  "description": "StreamPay - Non-custodial on-chain streaming payroll template for Hedera",
+  "framework": "nextjs",
+  "solidityFramework": "hardhat",
+  "version": "1.0.0"
+}

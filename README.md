@@ -1,78 +1,87 @@
-# Scaffold-HBAR — Blank starter
+# StreamPay
 
-Minimal Hedera dApp baseline: Next.js, Hardhat or Foundry, and Hedera networks (testnet, mainnet, local fork). No opinionated product UI — you add the app on top.
+StreamPay is a non-custodial, on-chain streaming payroll application on Hedera. Employers fund salary streams denominated in a stablecoin (USDC). Employees accrue their salary linearly every second and can claim it at any time. When claiming, employees can choose to receive the native stablecoin or automatically convert it to HBAR via the SaucerSwap V1 Router. Every claim generates an immutable receipt on the Hedera Consensus Service (HCS), providing a verifiable payroll audit trail.
 
-CLI key: `blank` (branch `templates/blank-template`).
-
-The full product guide — CLI flags, npm run vs npm, deploy, and verify — lives in [Scaffold HBAR on Hedera docs](https://docs.hedera.com/solutions/tools/scaffold-hbar/index). This README is what is specific to **this** template.
-
-## What's in this template
-
-- Next.js App Router with wallet connect, **Debug Contracts**, and a local block explorer
-- Sample HTS contracts (`HederaToken`, `HtsTokenCreator`) so Debug Contracts has something to call
-- Hardhat and Foundry packages (the CLI can drop one)
-- Hashio RPC + Mirror Node config for Hedera testnet and mainnet
-- Package manager: npm (recommended) or npm — see `template.json`
-
-Create a project from this template:
-
-```bash
-npm run create scaffold-hbar@latest -- --template blank
+```mermaid
+flowchart TD
+  E["Employer wallet"] -->|"approve + fund(USDC)"| V["PayrollVault.sol · HSCS"]
+  W["Employee wallet"] -->|"claim(planId, swapToHBAR, minOut)"| V
+  V -->|"approve + swapExactTokensForETH"| R["SaucerSwap V1 Router"]
+  R -->|"USDC → WHBAR pool"| W
+  V -->|"Claim event"| A["Next.js API route"]
+  A -->|"SubmitMessage"| T["HCS receipt topic"]
+  T -->|"mirror node polling"| U["Receipts UI + Hashscan links"]
 ```
 
-`npx create-scaffold-hbar@latest --template blank` is equivalent. The CLI also asks for frontend, Solidity framework, network, and package manager.
+## Prerequisites
 
-## Work from this repository
+- Node.js ≥ 20.18.3
+- Git
+- Yarn or npm
+- A Hedera Testnet account, which you can fund via the [Hedera Faucet](https://portal.hedera.com).
 
-This branch uses npm run workspaces, so clone-and-run needs npm. Apps created with the CLI can use npm (default) or npm; see the [docs](https://docs.hedera.com/solutions/tools/scaffold-hbar/index).
+## Quickstart
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) ≥ 20.18.3
-- [Git](https://git-scm.com/) with `user.name` and `user.email` configured
-- [npm](https://www.npmjs.com/) (default; required if you clone this repo) or npm run if you scaffolded with the CLI. For npm, install via Corepack:
-  ```bash
-  corepack enable && corepack prepare npm@stable --activate
-  ```
-- **If using Foundry:** [Foundry](https://book.getfoundry.sh/getting-started/installation) (`forge`, `cast`, `anvil`)
-
-### Quick start
-
+1. Scaffold the template:
 ```bash
-npm install
-
-# Terminal 1: local Hedera-forked node
-npm run hardhat:chain
-
-# Terminal 2: deploy to that node (8545)
-npm run hardhat:deploy --network localhost
-
-# Terminal 3: Next.js app
-npm run next:start
+npx create-scaffold-hbar@latest --template your-org/hbar-streampay
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and use the **Debug Contracts** page.
-
-Frontend only (no local chain):
-
+2. Enter the directory and install dependencies:
 ```bash
-npm install
-npm run next:dev
+cd hbar-streampay
+yarn install
 ```
 
-`npm run hardhat:deploy` without `--network localhost` targets the in-process `hardhat` network, not the long-running fork. Local Hardhat and Foundry workflows are in [`packages/hardhat/README.md`](packages/hardhat/README.md) and [`packages/foundry/README.md`](packages/foundry/README.md). Deploy and verify on testnet/mainnet: [Hedera docs](https://docs.hedera.com/solutions/tools/scaffold-hbar/index#deploying-to-testnet).
+3. Setup environment variables:
+```bash
+cp packages/hardhat/.env.example packages/hardhat/.env
+cp packages/nextjs/.env.example packages/nextjs/.env
+```
+Edit both `.env` files with your testnet private keys (see below).
 
-## Project layout
+4. Deploy the contracts and seed demo accounts:
+```bash
+yarn workspace @sh/hardhat deploy --network testnet
+```
 
-- **packages/hardhat** — Hardhat config, contracts, `deploy/` scripts, tests
-- **packages/foundry** — Forge config, contracts, `script/` deploy scripts, tests
-- **packages/nextjs** — Next.js app, RainbowKit, wagmi, scaffold config
+5. Start the frontend:
+```bash
+yarn workspace @sh/nextjs dev
+```
 
-Network and RPC URLs are in `packages/hardhat/hardhat.config.ts` and `packages/foundry/foundry.toml` respectively.
+## Environment Variables
 
-## Links
+| Variable | Description | Source |
+|----------|-------------|--------|
+| `DEPLOYER_PRIVATE_KEY_ENCRYPTED` | Optional encrypted deployer key. | Scaffold-HBAR `account:generate` script. |
+| `HEDERA_OPERATOR_ID` | Testnet Account ID (e.g., `0.0.1234`) | Hedera Portal |
+| `HEDERA_OPERATOR_KEY` | ECDSA Private Key for NextJS API to submit HCS messages | Hedera Portal |
+| `NEXT_PUBLIC_HCS_RECEIPT_TOPIC_ID` | The ID of the HCS topic used for receipts | Run `npm run hcs:create-topic` (if script available) or create manually |
 
-- [Scaffold HBAR docs](https://docs.hedera.com/solutions/tools/scaffold-hbar/index)
-- [create-scaffold-hbar](https://github.com/hedera-dev/create-scaffold-hbar) — CLI
-- [Hedera Portal faucet](https://portal.hedera.com/faucet)
-- [HashScan](https://hashscan.io/)
+## Hedera Services Integration
+
+| Service | Purpose | Hashscan Evidence |
+|---------|---------|-------------------|
+| **HSCS (Smart Contracts)** | Executes the `PayrollVault.sol` streaming logic and integrations. | [View Deployment]() |
+| **HTS (Token Service)** | Native performance for USDC transfers and WHBAR. | [View Token Transfer]() |
+| **HCS (Consensus Service)** | Immutable, timestamped receipts for every salary claim. | [View Topic Message]() |
+
+## Why SaucerSwap is Load-Bearing
+
+SaucerSwap is a critical infrastructure component for StreamPay. Without the SaucerSwap V1 Router, the "pay-in-HBAR" feature would be impossible. The `PayrollVault` contract utilizes the router's `swapExactTokensForETH` method to handle the conversion of stablecoins into native HBAR in a single transaction, providing a smooth employee experience.
+
+## Testnet Evidence
+
+All operations run flawlessly on the Hedera Testnet. See `docs/TESTNET_EVIDENCE.md` for verifiable Hashscan transaction links for deployments, funds, claims, and swaps.
+
+## Project Structure & Testing
+
+- `packages/hardhat/contracts`: Contains `PayrollVault.sol` and interfaces.
+- `packages/hardhat/test`: Contains the comprehensive test suite against a local `MockRouter`.
+- `packages/nextjs/app`: The Next.js 15 App Router frontend.
+
+To run the local contract tests:
+```bash
+yarn workspace @sh/hardhat test
+```
