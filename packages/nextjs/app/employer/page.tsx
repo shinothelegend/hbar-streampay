@@ -10,7 +10,7 @@ export default function EmployerPage() {
         </div>
 
         <CreatePlanForm />
-        
+
         {/* We would typically list employer streams here, but for now we focus on creating them */}
         <div className="text-center text-sm text-base-content/50 mt-12">
           Streams you create will be trackable by the employee ID.

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Address } from "viem";
-import { usePayrollVaultWrite } from "../../hooks/usePayrollVault";
 import { useERC20Write } from "../../hooks/useERC20";
+import { usePayrollVaultWrite } from "../../hooks/usePayrollVault";
 import { PAYROLL_VAULT_ADDRESS } from "../../hooks/usePayrollVault";
 import toast from "react-hot-toast";
+import { Address } from "viem";
 
 export const FundPlan = ({ planId, tokenAddress }: { planId: bigint; tokenAddress: Address }) => {
   const [amount, setAmount] = useState<string>("");
@@ -22,11 +22,11 @@ export const FundPlan = ({ planId, tokenAddress }: { planId: bigint; tokenAddres
       toast.loading("Approving tokens...", { id: "fund" });
       await approve(tokenAddress, PAYROLL_VAULT_ADDRESS, fundAmount);
       // We assume quick finality on Hedera
-      
+
       // Step 2: Fund
       toast.loading("Funding stream...", { id: "fund" });
       await fundPlan(planId, fundAmount);
-      
+
       toast.success("Stream funded successfully!", { id: "fund" });
       setAmount("");
     } catch (error: any) {
@@ -41,9 +41,9 @@ export const FundPlan = ({ planId, tokenAddress }: { planId: bigint; tokenAddres
         placeholder="Amount to fund"
         className="input input-bordered w-full"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={e => setAmount(e.target.value)}
       />
-      <button 
+      <button
         onClick={handleFund}
         className="btn btn-secondary"
         disabled={isFunding || isFundConfirming || isApproving || isApproveConfirming}

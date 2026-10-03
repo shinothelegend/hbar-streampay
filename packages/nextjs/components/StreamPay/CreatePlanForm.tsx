@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Address } from "viem";
 import { usePayrollVaultWrite } from "../../hooks/usePayrollVault";
 import toast from "react-hot-toast";
+import { Address } from "viem";
 
 export const CreatePlanForm = () => {
   const [employee, setEmployee] = useState<string>("");
@@ -21,7 +21,7 @@ export const CreatePlanForm = () => {
       }
 
       // Convert rate to appropriate decimals (assuming 6 decimals for USDC usually, but we keep it generic)
-      // Actually, ratePerSec is token units per second. If they want 100 tokens a day, 
+      // Actually, ratePerSec is token units per second. If they want 100 tokens a day,
       // they should input total tokens per day, and we calculate per second.
       // But for simplicity, we let them input the raw token units per second, or we calculate it.
       // Let's assume ratePerSec input is raw integer units for now.
@@ -58,10 +58,10 @@ export const CreatePlanForm = () => {
               placeholder="0x..."
               className="input input-bordered w-full"
               value={employee}
-              onChange={(e) => setEmployee(e.target.value)}
+              onChange={e => setEmployee(e.target.value)}
             />
           </div>
-          
+
           <div className="form-control">
             <label className="label">
               <span className="label-text">Token Address (e.g. USDC)</span>
@@ -71,7 +71,7 @@ export const CreatePlanForm = () => {
               placeholder="0x..."
               className="input input-bordered w-full"
               value={token}
-              onChange={(e) => setToken(e.target.value)}
+              onChange={e => setToken(e.target.value)}
             />
           </div>
 
@@ -84,7 +84,7 @@ export const CreatePlanForm = () => {
               placeholder="1000"
               className="input input-bordered w-full"
               value={ratePerSec}
-              onChange={(e) => setRatePerSec(e.target.value)}
+              onChange={e => setRatePerSec(e.target.value)}
             />
           </div>
 
@@ -98,16 +98,12 @@ export const CreatePlanForm = () => {
               placeholder="30"
               className="input input-bordered w-full"
               value={durationDays}
-              onChange={(e) => setDurationDays(e.target.value)}
+              onChange={e => setDurationDays(e.target.value)}
             />
           </div>
 
           <div className="form-control mt-6">
-            <button
-              type="submit"
-              className="btn btn-primary w-full"
-              disabled={isPending || isConfirming}
-            >
+            <button type="submit" className="btn btn-primary w-full" disabled={isPending || isConfirming}>
               {isPending || isConfirming ? "Processing..." : "Create Stream"}
             </button>
           </div>

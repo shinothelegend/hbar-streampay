@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Client, TopicId, TopicMessageSubmitTransaction, PrivateKey } from "@hiero-ledger/sdk";
+import { Client, PrivateKey, TopicId, TopicMessageSubmitTransaction } from "@hiero-ledger/sdk";
 
 export async function POST(req: Request) {
   try {
@@ -29,16 +29,16 @@ export async function POST(req: Request) {
         employee,
         amount: amount.toString(),
         txHash,
-        ts: Date.now()
+        ts: Date.now(),
       }),
     }).execute(client);
 
     const receipt = await msg.getReceipt(client);
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       status: receipt.status.toString(),
-      transactionId: msg.transactionId.toString()
+      transactionId: msg.transactionId.toString(),
     });
   } catch (error: any) {
     console.error("HCS Submit Error:", error);

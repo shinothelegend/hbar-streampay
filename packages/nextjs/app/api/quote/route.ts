@@ -4,15 +4,15 @@ import { hederaTestnet } from "viem/chains";
 
 const routerAbi = [
   {
-    "inputs": [
-      {"name": "amountIn", "type": "uint256"},
-      {"name": "path", "type": "address[]"}
+    inputs: [
+      { name: "amountIn", type: "uint256" },
+      { name: "path", type: "address[]" },
     ],
-    "name": "getAmountsOut",
-    "outputs": [{"name": "amounts", "type": "uint256[]"}],
-    "stateMutability": "view",
-    "type": "function"
-  }
+    name: "getAmountsOut",
+    outputs: [{ name: "amounts", type: "uint256[]" }],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;
 
 export async function GET(req: Request) {
@@ -29,14 +29,14 @@ export async function GET(req: Request) {
   try {
     const client = createPublicClient({
       chain: hederaTestnet,
-      transport: http(process.env.HEDERA_RPC_URL || "https://testnet.hashio.io/api")
+      transport: http(process.env.HEDERA_RPC_URL || "https://testnet.hashio.io/api"),
     });
 
     const amountsOut = await client.readContract({
       address: routerAddress,
       abi: routerAbi,
       functionName: "getAmountsOut",
-      args: [BigInt(amountIn), path as `0x${string}`[]]
+      args: [BigInt(amountIn), path as `0x${string}`[]],
     });
 
     return NextResponse.json({ amountsOut: amountsOut.map(a => a.toString()) });

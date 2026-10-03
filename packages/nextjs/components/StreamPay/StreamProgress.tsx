@@ -4,21 +4,21 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { formatUnits } from "viem";
 
-export const StreamProgress = ({ 
-  funded, 
-  vested, 
-  claimable, 
-  ratePerSec, 
-  startTime, 
-  endTime, 
-  cancelled 
-}: { 
-  funded: bigint; 
-  vested: bigint; 
-  claimable: bigint; 
-  ratePerSec: bigint; 
-  startTime: bigint; 
-  endTime: bigint; 
+export const StreamProgress = ({
+  funded,
+  vested,
+  claimable,
+  ratePerSec,
+  startTime,
+  endTime,
+  cancelled,
+}: {
+  funded: bigint;
+  vested: bigint;
+  claimable: bigint;
+  ratePerSec: bigint;
+  startTime: bigint;
+  endTime: bigint;
   cancelled: boolean;
 }) => {
   // We want to interpolate claimable and vested based on local time
@@ -34,16 +34,16 @@ export const StreamProgress = ({
 
     const interval = setInterval(() => {
       const now = BigInt(Math.floor(Date.now() / 1000));
-      
+
       // Calculate elapsed based on local clock to make it smooth
       let currentTimestamp = now;
       if (currentTimestamp > endTime) {
         currentTimestamp = endTime;
       }
-      
+
       const elapsed = currentTimestamp > startTime ? currentTimestamp - startTime : 0n;
       let newVested = ratePerSec * elapsed;
-      
+
       if (newVested > funded) {
         newVested = funded;
       }
@@ -52,7 +52,6 @@ export const StreamProgress = ({
       // The difference is what we added to vested locally
       const added = newVested - vested;
       setCurrentClaimable(claimable + added);
-
     }, 100); // 100ms smooth updates
 
     return () => clearInterval(interval);
@@ -79,7 +78,7 @@ export const StreamProgress = ({
       </div>
 
       <div className="w-full bg-base-100 h-4 rounded-full overflow-hidden relative">
-        <motion.div 
+        <motion.div
           className="h-full bg-success"
           initial={{ width: `${progressPercentage}%` }}
           animate={{ width: `${progressPercentage}%` }}
@@ -87,9 +86,7 @@ export const StreamProgress = ({
         />
       </div>
 
-      {cancelled && (
-        <div className="badge badge-error badge-outline">Stream Cancelled</div>
-      )}
+      {cancelled && <div className="badge badge-error badge-outline">Stream Cancelled</div>}
     </div>
   );
 };

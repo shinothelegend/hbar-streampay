@@ -19,7 +19,7 @@ export default function ReceiptsPage() {
         setLoading(false);
       }
     };
-    
+
     fetchReceipts();
     const interval = setInterval(fetchReceipts, 5000); // poll every 5s
     return () => clearInterval(interval);
@@ -63,14 +63,14 @@ export default function ReceiptsPage() {
                       {new Date(parseFloat(msg.consensusTimestamp) * 1000).toLocaleString()}
                     </td>
                     <td>{msg.payload.planId}</td>
-                    <td className="font-mono text-sm">{msg.payload.employee.slice(0, 8)}...{msg.payload.employee.slice(-6)}</td>
-                    <td className="text-success font-mono">
-                      {formatUnits(BigInt(msg.payload.amount), 6)}
+                    <td className="font-mono text-sm">
+                      {msg.payload.employee.slice(0, 8)}...{msg.payload.employee.slice(-6)}
                     </td>
+                    <td className="text-success font-mono">{formatUnits(BigInt(msg.payload.amount), 6)}</td>
                     <td>
-                      <a 
-                        href={`https://hashscan.io/testnet/transaction/${msg.payload.txHash}`} 
-                        target="_blank" 
+                      <a
+                        href={`https://hashscan.io/testnet/transaction/${msg.payload.txHash}`}
+                        target="_blank"
                         rel="noreferrer"
                         className="link link-primary text-xs"
                       >

@@ -20,11 +20,7 @@ export const CancelPlanButton = ({ planId }: { planId: bigint }) => {
   };
 
   return (
-    <button
-      onClick={handleCancel}
-      className="btn btn-error btn-outline"
-      disabled={isPending || isConfirming}
-    >
+    <button onClick={handleCancel} className="btn btn-error btn-outline" disabled={isPending || isConfirming}>
       {isPending || isConfirming ? "Cancelling..." : "Cancel Stream"}
     </button>
   );

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount } from "wagmi";
-import { StreamProgress } from "../../components/StreamPay/StreamProgress";
 import { ClaimStreamButton } from "../../components/StreamPay/ClaimStreamButton";
-import { usePlanDetails, useAccrued } from "../../hooks/usePayrollVault";
+import { StreamProgress } from "../../components/StreamPay/StreamProgress";
+import { useAccrued, usePlanDetails } from "../../hooks/usePayrollVault";
+import { useAccount } from "wagmi";
 
 export default function EmployeePage() {
   useAccount();
@@ -36,30 +36,34 @@ export default function EmployeePage() {
           <form onSubmit={handleLoadPlan} className="card bg-base-100 shadow-xl max-w-md mx-auto p-6 space-y-4">
             <h2 className="card-title">Load Salary Stream</h2>
             <p className="text-sm text-base-content/70">Enter the Plan ID provided by your employer.</p>
-            <input 
-              type="number" 
-              className="input input-bordered w-full" 
-              placeholder="e.g. 0" 
+            <input
+              type="number"
+              className="input input-bordered w-full"
+              placeholder="e.g. 0"
               value={planIdInput}
-              onChange={(e) => setPlanIdInput(e.target.value)}
+              onChange={e => setPlanIdInput(e.target.value)}
             />
-            <button type="submit" className="btn btn-primary w-full">Load Stream</button>
+            <button type="submit" className="btn btn-primary w-full">
+              Load Stream
+            </button>
           </form>
         ) : (
           <div className="space-y-6">
-            <button className="btn btn-ghost btn-sm" onClick={() => setActivePlanId(null)}>← Back to search</button>
-            
+            <button className="btn btn-ghost btn-sm" onClick={() => setActivePlanId(null)}>
+              ← Back to search
+            </button>
+
             {planDetails && planDetails[0] !== "0x0000000000000000000000000000000000000000" ? (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
                   {accruedData && (
-                    <StreamProgress 
-                      funded={planDetails[6]} 
-                      vested={accruedData[1]} 
-                      claimable={accruedData[0]} 
-                      ratePerSec={planDetails[3]} 
-                      startTime={planDetails[4]} 
-                      endTime={planDetails[5]} 
+                    <StreamProgress
+                      funded={planDetails[6]}
+                      vested={accruedData[1]}
+                      claimable={accruedData[0]}
+                      ratePerSec={planDetails[3]}
+                      startTime={planDetails[4]}
+                      endTime={planDetails[5]}
                       cancelled={planDetails[8]}
                     />
                   )}
@@ -72,9 +76,7 @@ export default function EmployeePage() {
                 </div>
               </div>
             ) : (
-              <div className="alert alert-warning">
-                Plan not found or you are not the assigned employee.
-              </div>
+              <div className="alert alert-warning">Plan not found or you are not the assigned employee.</div>
             )}
           </div>
         )}
