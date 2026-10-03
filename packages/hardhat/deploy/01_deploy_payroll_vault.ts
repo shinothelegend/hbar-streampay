@@ -13,11 +13,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy } = hre.deployments;
 
   console.log("Resolving Hedera Testnet addresses for SaucerSwap...");
-  
+
   // Resolve EVM addresses
   const routerEvm = await getEvmAddress(HEDERA_TESTNET.saucerSwapV1Router.hederaId);
   console.log(`Router EVM Address: ${routerEvm}`);
-  
+
   const whbarTokenEvm = await getEvmAddress(HEDERA_TESTNET.whbarToken.hederaId);
   console.log(`WHBAR EVM Address: ${whbarTokenEvm}`);
 

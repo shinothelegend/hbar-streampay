@@ -2,7 +2,9 @@ const { Client, PrivateKey, TransferTransaction, Hbar, AccountId } = require("@h
 
 async function main() {
   const operatorId = "0.0.10469716";
-  const operatorKey = PrivateKey.fromString("3030020100300706052b8104000a0422042057d682aa720093afb0bd5a3bfe3dcf639d76bc32bf3d9e617231aa42a6d56c7a");
+  const operatorKey = PrivateKey.fromString(
+    "3030020100300706052b8104000a0422042057d682aa720093afb0bd5a3bfe3dcf639d76bc32bf3d9e617231aa42a6d56c7a",
+  );
 
   const client = Client.forTestnet();
   client.setOperator(operatorId, operatorKey);

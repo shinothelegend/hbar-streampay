@@ -2,7 +2,9 @@ const { Client, PrivateKey, TransferTransaction, Hbar, AccountId } = require("@h
 
 async function main() {
   const operatorId = "0.0.10469716";
-  const operatorKey = PrivateKey.fromString("3030020100300706052b8104000a0422042057d682aa720093afb0bd5a3bfe3dcf639d76bc32bf3d9e617231aa42a6d56c7a");
+  const operatorKey = PrivateKey.fromString(
+    "3030020100300706052b8104000a0422042057d682aa720093afb0bd5a3bfe3dcf639d76bc32bf3d9e617231aa42a6d56c7a",
+  );
 
   const client = Client.forTestnet();
   client.setOperator(operatorId, operatorKey);
@@ -18,8 +20,10 @@ async function main() {
 
   const txResponse = await tx.execute(client);
   const receipt = await txResponse.getReceipt(client);
-  
-  console.log(`Success! Sent to alias account ID: ${receipt.accountId ? receipt.accountId.toString() : "Hollow Account created"}`);
+
+  console.log(
+    `Success! Sent to alias account ID: ${receipt.accountId ? receipt.accountId.toString() : "Hollow Account created"}`,
+  );
   process.exit(0);
 }
 

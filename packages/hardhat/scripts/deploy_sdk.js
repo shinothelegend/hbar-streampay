@@ -22,7 +22,7 @@ async function main() {
   const abiCoder = new ethers.AbiCoder();
   const constructorArgs = abiCoder.encode(
     ["address", "address"],
-    ["0x0000000000000000000000000000000000004b40", "0x0000000000000000000000000000000000003ad2"]
+    ["0x0000000000000000000000000000000000004b40", "0x0000000000000000000000000000000000003ad2"],
   );
 
   // Remove the '0x' from the hex constructor args
@@ -52,13 +52,10 @@ async function main() {
   const deploymentData = {
     address: contractAddress,
     abi: artifact.abi,
-    transactionHash: txResponse.transactionId.toString()
+    transactionHash: txResponse.transactionId.toString(),
   };
 
-  fs.writeFileSync(
-    path.join(deploymentsDir, "PayrollVault.json"),
-    JSON.stringify(deploymentData, null, 2)
-  );
+  fs.writeFileSync(path.join(deploymentsDir, "PayrollVault.json"), JSON.stringify(deploymentData, null, 2));
 
   console.log("Wrote deployment artifact to deployments/hederaTestnet/PayrollVault.json");
   process.exit(0);

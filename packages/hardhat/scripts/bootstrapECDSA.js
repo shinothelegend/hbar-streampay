@@ -4,13 +4,15 @@ async function main() {
   try {
     const operatorId = "0.0.10469716";
     // Using fromString() handles DER and raw prefixes automatically
-    const operatorKey = PrivateKey.fromString("3030020100300706052b8104000a0422042057d682aa720093afb0bd5a3bfe3dcf639d76bc32bf3d9e617231aa42a6d56c7a");
+    const operatorKey = PrivateKey.fromString(
+      "3030020100300706052b8104000a0422042057d682aa720093afb0bd5a3bfe3dcf639d76bc32bf3d9e617231aa42a6d56c7a",
+    );
 
     const client = Client.forTestnet();
     client.setOperator(operatorId, operatorKey);
 
     console.log("Operator balance...");
-    
+
     // Create new ECDSA account
     const newKey = PrivateKey.generateECDSA();
     console.log("New ECDSA Private Key:", newKey.toStringRaw());

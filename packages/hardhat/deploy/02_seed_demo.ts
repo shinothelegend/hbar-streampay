@@ -15,7 +15,7 @@ async function getEvmAddress(hederaId: string): Promise<string> {
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const [deployer] = await ethers.getSigners();
-  
+
   if (hre.network.name !== "testnet") {
     console.log("Skipping seed demo on non-testnet network");
     return;
@@ -41,7 +41,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   // Associate USDC and WHBAR via HIP-719 fallback
   console.log("Associating HTS tokens for employer...");
-  await (await employerWallet.sendTransaction({ to: usdcEvm, data: "0x1b9265b8" /* associate() */, gasLimit: 1000000 })).wait();
+  await (
+    await employerWallet.sendTransaction({ to: usdcEvm, data: "0x1b9265b8" /* associate() */, gasLimit: 1000000 })
+  ).wait();
   await (await employerWallet.sendTransaction({ to: whbarEvm, data: "0x1b9265b8", gasLimit: 1000000 })).wait();
 
   console.log("Associating HTS tokens for employee...");
