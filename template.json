@@ -1,7 +1,34 @@
 {
   "name": "hbar-streampay",
   "description": "StreamPay - Non-custodial on-chain streaming payroll template for Hedera",
-  "framework": "nextjs",
-  "solidityFramework": "hardhat",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "create-scaffold-hbar": {
+    "defaults": {
+      "frontend": "nextjs-app",
+      "solidityFramework": "hardhat",
+      "packageManager": "npm"
+    },
+    "envVars": [
+      "NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID",
+      "NEXT_PUBLIC_PAYROLL_VAULT_ADDRESS",
+      "NEXT_PUBLIC_HCS_RECEIPT_TOPIC_ID",
+      "HEDERA_OPERATOR_ID",
+      "HEDERA_OPERATOR_KEY",
+      "HEDERA_RPC_URL",
+      "NEXT_PUBLIC_HEDERA_NETWORK",
+      "NEXT_PUBLIC_HEDERA_RPC_URL"
+    ],
+    "outro": {
+      "sections": [
+        {
+          "title": "Compile & Deploy Contracts",
+          "content": "{run:hardhat:deploy}"
+        },
+        {
+          "title": "Start Next.js Frontend",
+          "content": "{run:next:dev}"
+        }
+      ]
+    }
+  }
 }

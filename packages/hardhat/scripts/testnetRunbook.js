@@ -55,14 +55,14 @@ async function main() {
   try {
     const tx0 = await vault.associateToken(USDC, { gasPrice });
     await tx0.wait();
-  } catch (e) {
+  } catch {
     console.log("Vault associate error or already associated");
   }
 
   try {
     const tx1 = await vault.associateToken(WHBAR, { gasPrice });
     await tx1.wait();
-  } catch (e) {
+  } catch {
     console.log("Vault associate WHBAR error or already associated");
   }
 
@@ -124,7 +124,7 @@ async function main() {
     const vaultEmpA = vault.connect(empAWallet);
     // Note: Emp A has 0 HBAR for gas. We must send gas.
     await employerWallet
-      .sendTransaction({ to: empAWallet.address, value: ethers.parseEther("2"), gasPrice })
+      .sendTransaction({ to: empAWallet.address, value: ethers.parseEther("10"), gasPrice })
       .then(tx => tx.wait());
 
     const txClaimA = await vaultEmpA.claim(planIdA, false, 0, { gasPrice });

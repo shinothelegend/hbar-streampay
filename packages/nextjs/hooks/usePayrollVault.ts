@@ -4,9 +4,7 @@ import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from 
 
 export const payrollVaultABI = PayrollVaultArtifact.abi as Abi;
 
-// You can swap this with the actual deployed address later
-export const PAYROLL_VAULT_ADDRESS = (process.env.NEXT_PUBLIC_PAYROLL_VAULT_ADDRESS ||
-  "0x0000000000000000000000000000000000000000") as Address;
+export const PAYROLL_VAULT_ADDRESS = process.env.NEXT_PUBLIC_PAYROLL_VAULT_ADDRESS as Address | undefined;
 
 /**
  * Hook to read the accrued amounts of a specific plan
@@ -47,6 +45,7 @@ export function usePayrollVaultWrite() {
   });
 
   const createPlan = async (employee: Address, token: Address, ratePerSec: bigint, duration: bigint) => {
+    if (!PAYROLL_VAULT_ADDRESS) throw new Error("Vault not configured");
     return writeContractAsync({
       address: PAYROLL_VAULT_ADDRESS,
       abi: payrollVaultABI,
@@ -56,6 +55,7 @@ export function usePayrollVaultWrite() {
   };
 
   const fundPlan = async (planId: bigint, amount: bigint) => {
+    if (!PAYROLL_VAULT_ADDRESS) throw new Error("Vault not configured");
     return writeContractAsync({
       address: PAYROLL_VAULT_ADDRESS,
       abi: payrollVaultABI,
@@ -74,6 +74,7 @@ export function usePayrollVaultWrite() {
   };
 
   const cancelPlan = async (planId: bigint) => {
+    if (!PAYROLL_VAULT_ADDRESS) throw new Error("Vault not configured");
     return writeContractAsync({
       address: PAYROLL_VAULT_ADDRESS,
       abi: payrollVaultABI,

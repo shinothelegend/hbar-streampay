@@ -12,6 +12,8 @@ export const StreamProgress = ({
   startTime,
   endTime,
   cancelled,
+  decimals,
+  symbol,
 }: {
   funded: bigint;
   vested: bigint;
@@ -20,6 +22,8 @@ export const StreamProgress = ({
   startTime: bigint;
   endTime: bigint;
   cancelled: boolean;
+  decimals: number;
+  symbol: string;
 }) => {
   // We want to interpolate claimable and vested based on local time
   const [currentVested, setCurrentVested] = useState<bigint>(vested);
@@ -65,14 +69,14 @@ export const StreamProgress = ({
         <div>
           <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-widest">Available to Claim</h3>
           <div className="font-mono text-4xl text-primary flex items-baseline space-x-2 tabular-nums">
-            <span>{formatUnits(currentClaimable, 6)}</span>
-            <span className="text-sm text-base-content/50">TOKENS</span>
+            <span>{formatUnits(currentClaimable, decimals)}</span>
+            <span className="text-sm text-base-content/50">{symbol}</span>
           </div>
         </div>
         <div className="text-right">
           <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-widest">Total Vested</h3>
           <div className="font-mono text-2xl text-base-content tabular-nums">
-            {formatUnits(currentVested, 6)} <span className="text-sm opacity-50">/ {formatUnits(funded, 6)}</span>
+            {formatUnits(currentVested, decimals)} <span className="text-sm opacity-50">/ {formatUnits(funded, decimals)}</span>
           </div>
         </div>
       </div>

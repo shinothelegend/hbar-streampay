@@ -2,8 +2,8 @@
 
 > **Verified on Hedera Testnet:**
 > - **Smart Contract:** [0.0.10840783](https://hashscan.io/testnet/contract/0.0.10840783)
-> - **Seed Transfer (Fund):** [View Transaction](https://hashscan.io/testnet/transaction/0x722cc08050bd641bf754306f83d3f948208ebb634ee588c9d057af52e5da58be)
-> - **Salary Claim:** [View USDC Claim](https://hashscan.io/testnet/transaction/0x5db5f99d17208424b7d7b7f9b97311ee7a5bed85b6fffd7a99207b57a64d7858)
+> - **Seed Transfer (Fund):** [View Transaction](https://hashscan.io/testnet/transaction/0x2f9487e91434c4a68fb6c3f63049a17f655fbf1bfadd7713c9fb38fefd36839a)
+> - **Salary Claim:** [View USDC Claim](https://hashscan.io/testnet/transaction/0x728a38b02cf5e6ed7383b94e512e450ffede5c3c3e111151d057d8ed75cf1543)
 > - **HCS Topic Message:** [View Topic Message](https://hashscan.io/testnet/transaction/0.0.10469716-1791025581-655739693)
 
 StreamPay is a non-custodial, on-chain streaming payroll application on Hedera. Employers fund salary streams denominated in a stablecoin (USDC). Employees accrue their salary linearly every second and can claim it at any time. When claiming, employees can choose to receive the native stablecoin or automatically convert it to HBAR via the SaucerSwap V1 Router. Every claim generates an immutable receipt on the Hedera Consensus Service (HCS), providing a verifiable payroll audit trail.
@@ -30,13 +30,13 @@ flowchart TD
 
 1. Scaffold the template:
 ```bash
-npm create scaffold-hbar@latest -- --template shinothelegend/hbar-streampay
+npx create-scaffold-hbar@latest --template shinothelegend/hbar-streampay
 ```
 
 2. Enter the directory and install dependencies:
 ```bash
 cd hbar-streampay
-npm install
+yarn install
 ```
 
 3. Setup environment variables:
@@ -48,12 +48,12 @@ Edit both `.env` files with your testnet private keys (see below).
 
 4. Deploy the contracts and seed demo accounts:
 ```bash
-npm run hardhat:deploy -- --network hederaTestnet
+yarn hardhat:deploy --network hederaTestnet
 ```
 
 5. Start the frontend:
 ```bash
-npm run next:dev
+yarn next:dev
 ```
 
 ## Environment Variables
@@ -69,9 +69,9 @@ npm run next:dev
 
 | Service | Purpose | Hashscan Evidence |
 |---------|---------|-------------------|
-| **HSCS (Smart Contracts)** | Executes the `PayrollVault.sol` streaming logic and integrations. | [View Deployment]() |
-| **HTS (Token Service)** | Native performance for USDC transfers and WHBAR. | [View Token Transfer]() |
-| **HCS (Consensus Service)** | Immutable, timestamped receipts for every salary claim. | [View Topic Message]() |
+| **HSCS (Smart Contracts)** | Executes the `PayrollVault.sol` streaming logic and integrations. | [View Deployment](https://hashscan.io/testnet/contract/0.0.10840783) |
+| **HTS (Token Service)** | Native performance for USDC transfers and WHBAR. | [View Token Transfer](https://hashscan.io/testnet/transaction/0x728a38b02cf5e6ed7383b94e512e450ffede5c3c3e111151d057d8ed75cf1543) |
+| **HCS (Consensus Service)** | Immutable, timestamped receipts for every salary claim. | [View Topic Message](https://hashscan.io/testnet/transaction/0.0.10469716-1791025581-655739693) |
 
 ## Why SaucerSwap is Load-Bearing
 
@@ -79,7 +79,7 @@ SaucerSwap is a critical infrastructure component for StreamPay. Without the Sau
 
 ## Testnet Evidence
 
-All operations run flawlessly on the Hedera Testnet. See `docs/TESTNET_EVIDENCE.md` for verifiable Hashscan transaction links for deployments, funds, claims, and swaps.
+The core operations run successfully on the Hedera Testnet. See `docs/TESTNET_EVIDENCE.md` for verifiable Hashscan transaction links for deployments, funds, claims, and notes regarding the testnet HBAR swap execution.
 
 ## Project Structure & Testing
 
@@ -89,5 +89,5 @@ All operations run flawlessly on the Hedera Testnet. See `docs/TESTNET_EVIDENCE.
 
 To run the local contract tests:
 ```bash
-npm run hardhat:test
+yarn hardhat:test
 ```

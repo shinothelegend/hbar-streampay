@@ -6,6 +6,11 @@ export type ScaffoldConfig = {
   rpcOverrides?: Record<number, string>;
   enableBurnerWallet: boolean;
   walletConnectProjectId: string;
+  testnetAddresses?: {
+    router: string;
+    whbar: string;
+    usdc: string;
+  };
 };
 
 const hederaLocalFork = {
@@ -39,6 +44,13 @@ const scaffoldConfig = {
   },
 
   walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "3a8170812b534d0ff9d794f19a901d64",
+
+  // Verified Testnet EVM Addresses
+  testnetAddresses: {
+    router: "0x0000000000000000000000000000000000004b40",
+    whbar: "0x0000000000000000000000000000000000003ad2",
+    usdc: "0x0000000000000000000000000000000000001549"
+  }
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;

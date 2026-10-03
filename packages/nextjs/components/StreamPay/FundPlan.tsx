@@ -19,6 +19,10 @@ export const FundPlan = ({ planId, tokenAddress }: { planId: bigint; tokenAddres
       if (!amount) throw new Error("Please enter an amount");
       const fundAmount = BigInt(amount);
 
+      if (!PAYROLL_VAULT_ADDRESS) {
+        throw new Error("Vault address not configured");
+      }
+
       // Step 1: Approve
       toast.loading("Approving tokens...", { id: "fund" });
       await approve(tokenAddress, PAYROLL_VAULT_ADDRESS, fundAmount);

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { StreamProgress } from "../components/StreamPay/StreamProgress";
 import { PAYROLL_VAULT_ADDRESS, payrollVaultABI, useAccrued, usePlanDetails } from "../hooks/usePayrollVault";
 import { motion } from "framer-motion";
-import { formatUnits } from "viem";
+import { formatUnits, erc20Abi } from "viem";
 import { useReadContract } from "wagmi";
 
 const HeroTicker = ({ planId }: { planId?: bigint }) => {
@@ -63,6 +63,22 @@ const PlanCard = ({ planId }: { planId: bigint }) => {
   const planDetails = planDetailsData as any;
   const accruedData = accruedDataData as any;
 
+  const tokenAddress = planDetails?.[2] as `0x${string}` | undefined;
+
+  const { data: tokenDecimals } = useReadContract({
+    address: tokenAddress,
+    abi: erc20Abi,
+    functionName: "decimals",
+    query: { enabled: !!tokenAddress },
+  });
+
+  const { data: tokenSymbol } = useReadContract({
+    address: tokenAddress,
+    abi: erc20Abi,
+    functionName: "symbol",
+    query: { enabled: !!tokenAddress },
+  });
+
   if (!planDetails || planDetails[0] === "0x0000000000000000000000000000000000000000") return null;
 
   return (
@@ -96,6 +112,8 @@ const PlanCard = ({ planId }: { planId: bigint }) => {
             startTime={planDetails[4]}
             endTime={planDetails[5]}
             cancelled={planDetails[8]}
+            decimals={(tokenDecimals as number) || 6}
+            symbol={(tokenSymbol as string) || "TOKENS"}
           />
         )}
       </div>

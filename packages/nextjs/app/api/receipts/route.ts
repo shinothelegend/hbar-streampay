@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { Client, PrivateKey, TopicId, TopicMessageSubmitTransaction } from "@hiero-ledger/sdk";
+import { createPublicClient, http, decodeEventLog } from "viem";
+import { hederaTestnet } from "viem/chains";
+import PayrollVaultArtifact from "../../../contracts/PayrollVaultABI.json";
 
 export async function POST(req: Request) {
   try {
@@ -7,6 +10,43 @@ export async function POST(req: Request) {
 
     if (planId === undefined || !employee || !amount || !txHash) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    try {
+      const publicClient = createPublicClient({ chain: hederaTestnet, transport: http() });
+      const txReceipt = await publicClient.getTransactionReceipt({ hash: txHash as `0x${string}` });
+      if (!txReceipt || txReceipt.status !== "success") {
+        return NextResponse.json({ error: "Transaction not successful or not found" }, { status: 400 });
+      }
+
+      let eventFound = false;
+      for (const log of txReceipt.logs) {
+        try {
+          const decoded = decodeEventLog({
+            abi: PayrollVaultArtifact.abi,
+            data: log.data,
+            topics: log.topics,
+          });
+          if (decoded.eventName === "Claimed") {
+            const ev = decoded.args as any;
+            if (
+              ev.planId.toString() === planId.toString() &&
+              ev.employee.toLowerCase() === employee.toLowerCase() &&
+              ev.amount.toString() === amount.toString()
+            ) {
+              eventFound = true;
+            }
+          }
+        } catch {
+          // ignore non-matching logs
+        }
+      }
+
+      if (!eventFound) {
+        return NextResponse.json({ error: "Transaction data does not match submitted receipt" }, { status: 400 });
+      }
+    } catch (e: any) {
+      return NextResponse.json({ error: "Failed to validate transaction on-chain", details: e.message }, { status: 400 });
     }
 
     const topicIdStr = process.env.NEXT_PUBLIC_HCS_RECEIPT_TOPIC_ID || process.env.HCS_RECEIPT_TOPIC_ID;

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createPublicClient, http } from "viem";
 import { hederaTestnet } from "viem/chains";
+import scaffoldConfig from "~~/scaffold.config";
 
 const routerAbi = [
   {
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
   }
 
-  const routerAddress = "0x0000000000000000000000000000000000004b40"; // 0.0.19264 testnet V1 router
+  const routerAddress = scaffoldConfig.testnetAddresses!.router as `0x${string}`;
 
   try {
     const client = createPublicClient({

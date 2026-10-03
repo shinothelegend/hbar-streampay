@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { usePayrollVaultWrite } from "../../hooks/usePayrollVault";
+import scaffoldConfig from "~~/scaffold.config";
 import toast from "react-hot-toast";
 import { useAccount, useReadContract } from "wagmi";
+
 
 const ROUTER_ABI = [
   {
@@ -18,16 +20,16 @@ const ROUTER_ABI = [
   },
 ];
 
-export const ClaimStreamButton = ({ planId, claimable }: { planId: bigint; claimable?: bigint }) => {
+export const ClaimStreamButton = ({ planId, claimable, symbol }: { planId: bigint; claimable?: bigint; symbol: string }) => {
   const [swapToHBAR, setSwapToHBAR] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const { address } = useAccount();
   const { claim, isPending, isConfirming } = usePayrollVaultWrite();
 
-  const USDC = "0x0000000000000000000000000000000000001549";
-  const WHBAR = "0x0000000000000000000000000000000000003ad2";
-  const ROUTER = "0x0000000000000000000000000000000000004b40";
+  const USDC = scaffoldConfig.testnetAddresses!.usdc as `0x${string}`;
+  const WHBAR = scaffoldConfig.testnetAddresses!.whbar as `0x${string}`;
+  const ROUTER = scaffoldConfig.testnetAddresses!.router as `0x${string}`;
 
   const amountIn = claimable || 0n;
 
@@ -82,7 +84,7 @@ export const ClaimStreamButton = ({ planId, claimable }: { planId: bigint; claim
           checked={swapToHBAR}
           onChange={e => setSwapToHBAR(e.target.checked)}
         />
-        <span className="label-text">Receive as Native HBAR (via SaucerSwap)</span>
+        <span className="label-text">Receive as Native HBAR (swap {symbol} via SaucerSwap)</span>
       </label>
 
       {swapToHBAR && Array.isArray(amountsOut) && amountsOut.length === 2 && (
