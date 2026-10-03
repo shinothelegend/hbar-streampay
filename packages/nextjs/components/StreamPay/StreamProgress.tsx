@@ -76,7 +76,8 @@ export const StreamProgress = ({
         <div className="text-right">
           <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-widest">Total Vested</h3>
           <div className="font-mono text-2xl text-base-content tabular-nums">
-            {formatUnits(currentVested, decimals)} <span className="text-sm opacity-50">/ {formatUnits(funded, decimals)}</span>
+            {formatUnits(currentVested, decimals)}{" "}
+            <span className="text-sm opacity-50">/ {formatUnits(funded, decimals)}</span>
           </div>
         </div>
       </div>

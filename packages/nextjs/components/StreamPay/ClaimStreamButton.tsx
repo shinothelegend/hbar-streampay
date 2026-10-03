@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { usePayrollVaultWrite } from "../../hooks/usePayrollVault";
-import scaffoldConfig from "~~/scaffold.config";
 import toast from "react-hot-toast";
 import { useAccount, useReadContract } from "wagmi";
-
+import scaffoldConfig from "~~/scaffold.config";
 
 const ROUTER_ABI = [
   {
@@ -20,7 +19,15 @@ const ROUTER_ABI = [
   },
 ];
 
-export const ClaimStreamButton = ({ planId, claimable, symbol }: { planId: bigint; claimable?: bigint; symbol: string }) => {
+export const ClaimStreamButton = ({
+  planId,
+  claimable,
+  symbol,
+}: {
+  planId: bigint;
+  claimable?: bigint;
+  symbol: string;
+}) => {
   const [swapToHBAR, setSwapToHBAR] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 

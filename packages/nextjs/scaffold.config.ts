@@ -49,8 +49,8 @@ const scaffoldConfig = {
   testnetAddresses: {
     router: "0x0000000000000000000000000000000000004b40",
     whbar: "0x0000000000000000000000000000000000003ad2",
-    usdc: "0x0000000000000000000000000000000000001549"
-  }
+    usdc: "0x0000000000000000000000000000000000001549",
+  },
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;

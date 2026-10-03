@@ -5,7 +5,7 @@ import Link from "next/link";
 import { StreamProgress } from "../components/StreamPay/StreamProgress";
 import { PAYROLL_VAULT_ADDRESS, payrollVaultABI, useAccrued, usePlanDetails } from "../hooks/usePayrollVault";
 import { motion } from "framer-motion";
-import { formatUnits, erc20Abi } from "viem";
+import { erc20Abi, formatUnits } from "viem";
 import { useReadContract } from "wagmi";
 
 const HeroTicker = ({ planId }: { planId?: bigint }) => {

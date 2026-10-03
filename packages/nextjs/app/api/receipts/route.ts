@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { Client, PrivateKey, TopicId, TopicMessageSubmitTransaction } from "@hiero-ledger/sdk";
-import { createPublicClient, http, decodeEventLog } from "viem";
-import { hederaTestnet } from "viem/chains";
 import PayrollVaultArtifact from "../../../contracts/PayrollVaultABI.json";
+import { Client, PrivateKey, TopicId, TopicMessageSubmitTransaction } from "@hiero-ledger/sdk";
+import { createPublicClient, decodeEventLog, http } from "viem";
+import { hederaTestnet } from "viem/chains";
 
 export async function POST(req: Request) {
   try {
@@ -46,7 +46,10 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Transaction data does not match submitted receipt" }, { status: 400 });
       }
     } catch (e: any) {
-      return NextResponse.json({ error: "Failed to validate transaction on-chain", details: e.message }, { status: 400 });
+      return NextResponse.json(
+        { error: "Failed to validate transaction on-chain", details: e.message },
+        { status: 400 },
+      );
     }
 
     const topicIdStr = process.env.NEXT_PUBLIC_HCS_RECEIPT_TOPIC_ID || process.env.HCS_RECEIPT_TOPIC_ID;
