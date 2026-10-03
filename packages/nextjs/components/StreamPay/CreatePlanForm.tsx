@@ -10,6 +10,7 @@ export const CreatePlanForm = () => {
   const [token, setToken] = useState<string>("");
   const [ratePerSec, setRatePerSec] = useState<string>("");
   const [durationDays, setDurationDays] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { createPlan, isPending, isConfirming } = usePayrollVaultWrite();
 
@@ -35,12 +36,20 @@ export const CreatePlanForm = () => {
         error: "Failed to create plan",
       });
       // We could wait for confirmation here or let wagmi handle it
+      if (tx) {
+        setIsSuccess(true);
+        setTimeout(() => setIsSuccess(false), 3000);
+      }
+
       setEmployee("");
       setToken("");
       setRatePerSec("");
       setDurationDays("");
     } catch (error: any) {
-      toast.error(error?.message || "Failed to create plan");
+      let msg = error?.message || "Failed to create plan";
+      if (msg.includes("InvalidEmployee")) msg = "Error: InvalidEmployee (cannot be zero address)";
+      if (msg.includes("InvalidToken")) msg = "Error: InvalidToken";
+      toast.error(msg);
     }
   };
 
@@ -103,8 +112,18 @@ export const CreatePlanForm = () => {
           </div>
 
           <div className="form-control mt-6">
-            <button type="submit" className="btn btn-primary w-full" disabled={isPending || isConfirming}>
-              {isPending || isConfirming ? "Processing..." : "Create Stream"}
+            <button
+              type="submit"
+              className={`btn ${isPending || isConfirming ? "btn-warning" : isSuccess ? "btn-success text-success-content" : "btn-primary"} w-full rounded-none`}
+              disabled={isPending || isConfirming || isSuccess}
+            >
+              {isPending || isConfirming ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : isSuccess ? (
+                "Success!"
+              ) : (
+                "Create Stream"
+              )}
             </button>
           </div>
         </form>

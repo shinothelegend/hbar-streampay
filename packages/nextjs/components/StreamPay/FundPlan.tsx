@@ -9,6 +9,7 @@ import { Address } from "viem";
 
 export const FundPlan = ({ planId, tokenAddress }: { planId: bigint; tokenAddress: Address }) => {
   const [amount, setAmount] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { fundPlan, isPending: isFunding, isConfirming: isFundConfirming } = usePayrollVaultWrite();
   const { approve, isPending: isApproving, isConfirming: isApproveConfirming } = useERC20Write();
@@ -28,9 +29,13 @@ export const FundPlan = ({ planId, tokenAddress }: { planId: bigint; tokenAddres
       await fundPlan(planId, fundAmount);
 
       toast.success("Stream funded successfully!", { id: "fund" });
+      setIsSuccess(true);
+      setTimeout(() => setIsSuccess(false), 3000);
       setAmount("");
     } catch (error: any) {
-      toast.error(error?.message || "Failed to fund", { id: "fund" });
+      let msg = error?.message || "Failed to fund";
+      if (msg.includes("NotEmployer")) msg = "Error: NotEmployer (only employer can fund/manage)";
+      toast.error(msg, { id: "fund" });
     }
   };
 
@@ -39,16 +44,22 @@ export const FundPlan = ({ planId, tokenAddress }: { planId: bigint; tokenAddres
       <input
         type="number"
         placeholder="Amount to fund"
-        className="input input-bordered w-full"
+        className="input input-bordered w-full tabular-nums"
         value={amount}
         onChange={e => setAmount(e.target.value)}
       />
       <button
         onClick={handleFund}
-        className="btn btn-secondary"
-        disabled={isFunding || isFundConfirming || isApproving || isApproveConfirming}
+        className={`btn ${isFunding || isFundConfirming || isApproving || isApproveConfirming ? "btn-warning" : isSuccess ? "btn-success text-success-content" : "btn-secondary"} rounded-none`}
+        disabled={isFunding || isFundConfirming || isApproving || isApproveConfirming || isSuccess}
       >
-        Fund
+        {isFunding || isFundConfirming || isApproving || isApproveConfirming ? (
+          <span className="loading loading-spinner loading-sm"></span>
+        ) : isSuccess ? (
+          "Funded"
+        ) : (
+          "Fund"
+        )}
       </button>
     </div>
   );

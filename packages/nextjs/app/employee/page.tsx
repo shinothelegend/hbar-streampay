@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ClaimStreamButton } from "../../components/StreamPay/ClaimStreamButton";
 import { StreamProgress } from "../../components/StreamPay/StreamProgress";
 import { useAccrued, usePlanDetails } from "../../hooks/usePayrollVault";
+import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
 
 export default function EmployeePage() {
@@ -28,12 +29,17 @@ export default function EmployeePage() {
     <div className="min-h-screen bg-base-200 p-8 pt-24">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold hedera-gradient-text inline-block">Employee Dashboard</h1>
+          <h1 className="text-4xl font-bold inline-block tracking-tight">Employee Dashboard</h1>
           <p className="text-base-content/70 mt-2">Watch your salary stream in real-time and claim when ready.</p>
         </div>
 
         {!activePlanId ? (
-          <form onSubmit={handleLoadPlan} className="card bg-base-100 shadow-xl max-w-md mx-auto p-6 space-y-4">
+          <motion.form
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            onSubmit={handleLoadPlan}
+            className="card bg-base-100 shadow-xl max-w-md mx-auto p-6 space-y-4"
+          >
             <h2 className="card-title">Load Salary Stream</h2>
             <p className="text-sm text-base-content/70">Enter the Plan ID provided by your employer.</p>
             <input
@@ -43,10 +49,10 @@ export default function EmployeePage() {
               value={planIdInput}
               onChange={e => setPlanIdInput(e.target.value)}
             />
-            <button type="submit" className="btn btn-primary w-full">
+            <button type="submit" className="btn btn-primary w-full rounded-none">
               Load Stream
             </button>
-          </form>
+          </motion.form>
         ) : (
           <div className="space-y-6">
             <button className="btn btn-ghost btn-sm" onClick={() => setActivePlanId(null)}>
@@ -69,14 +75,24 @@ export default function EmployeePage() {
                   )}
                 </div>
                 <div>
-                  <div className="card bg-base-100 shadow-xl p-6">
-                    <h3 className="font-bold text-lg mb-4">Claim Salary</h3>
-                    <ClaimStreamButton planId={activePlanId} />
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="card bg-base-100 shadow-xl p-6"
+                  >
+                    <h3 className="font-bold text-lg mb-4 tracking-tight">Claim Salary</h3>
+                    <ClaimStreamButton planId={activePlanId} claimable={accruedData?.[0]} />
+                  </motion.div>
                 </div>
               </div>
             ) : (
-              <div className="alert alert-warning">Plan not found or you are not the assigned employee.</div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="alert alert-warning rounded-none"
+              >
+                Plan not found or you are not the assigned employee.
+              </motion.div>
             )}
           </div>
         )}

@@ -1,11 +1,12 @@
-import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import PayrollVaultArtifact from "../contracts/PayrollVaultABI.json";
-import { Address, Abi } from "viem";
+import { Abi, Address } from "viem";
+import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 export const payrollVaultABI = PayrollVaultArtifact.abi as Abi;
 
 // You can swap this with the actual deployed address later
-export const PAYROLL_VAULT_ADDRESS = (process.env.NEXT_PUBLIC_PAYROLL_VAULT_ADDRESS || "0x0000000000000000000000000000000000000000") as Address;
+export const PAYROLL_VAULT_ADDRESS = (process.env.NEXT_PUBLIC_PAYROLL_VAULT_ADDRESS ||
+  "0x0000000000000000000000000000000000000000") as Address;
 
 /**
  * Hook to read the accrued amounts of a specific plan
@@ -19,7 +20,7 @@ export function useAccrued(planId: bigint) {
     query: {
       // Refetch every 10 seconds to keep UI updated naturally
       refetchInterval: 10000,
-    }
+    },
   });
 }
 
@@ -90,6 +91,6 @@ export function usePayrollVaultWrite() {
     isPending,
     isConfirming,
     isConfirmed,
-    error
+    error,
   };
 }

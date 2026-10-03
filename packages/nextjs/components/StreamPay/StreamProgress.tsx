@@ -64,22 +64,22 @@ export const StreamProgress = ({
       <div className="flex justify-between items-end">
         <div>
           <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-widest">Available to Claim</h3>
-          <div className="font-mono text-4xl text-success flex items-baseline space-x-2">
+          <div className="font-mono text-4xl text-primary flex items-baseline space-x-2 tabular-nums">
             <span>{formatUnits(currentClaimable, 6)}</span>
             <span className="text-sm text-base-content/50">TOKENS</span>
           </div>
         </div>
         <div className="text-right">
           <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-widest">Total Vested</h3>
-          <div className="font-mono text-2xl text-base-content">
+          <div className="font-mono text-2xl text-base-content tabular-nums">
             {formatUnits(currentVested, 6)} <span className="text-sm opacity-50">/ {formatUnits(funded, 6)}</span>
           </div>
         </div>
       </div>
 
-      <div className="w-full bg-base-100 h-4 rounded-full overflow-hidden relative">
+      <div className="w-full bg-base-100 h-4 rounded-none overflow-hidden relative">
         <motion.div
-          className="h-full bg-success"
+          className="h-full bg-primary"
           initial={{ width: `${progressPercentage}%` }}
           animate={{ width: `${progressPercentage}%` }}
           transition={{ ease: "linear", duration: 0.1 }}
