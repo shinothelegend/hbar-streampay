@@ -18,7 +18,7 @@ All links point to Hashscan on the Hedera Testnet.
 
 ## 4. Claim (Auto-converted to HBAR via SaucerSwap)
 - **Action:** Employee claims accrued salary, and the Vault swaps it to HBAR via SaucerSwap V1 Router.
-- **Hashscan Link:** *(User will execute via UI testing)*
+- **Hashscan Link:** *(Could not execute: SaucerSwap V1 Testnet USDC-WHBAR liquidity pool is currently drained, causing the router to revert with internal INSUFFICIENT_FUNDS during the swap)*
 
 ## 5. HCS Audit Trail Receipt
 - **Topic ID:** `0.0.10840759`

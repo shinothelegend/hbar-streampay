@@ -39,6 +39,8 @@ async function main() {
   console.log("Employee A Address:", empAWallet.address);
   console.log("Employee B Address:", empBWallet.address);
 
+  const gasPrice = ethers.parseUnits("1500", "gwei");
+
   const USDC = "0x0000000000000000000000000000000000001549"; // 0.0.5449
   const USDC_HEDERA_ID = "0.0.5449";
   const WHBAR = "0x0000000000000000000000000000000000003ad2"; // 0.0.15058
@@ -51,14 +53,14 @@ async function main() {
   // Associate Vault using ethers (associateToken method)
   console.log("Associating vault with USDC...");
   try {
-    const tx0 = await vault.associateToken(USDC);
+    const tx0 = await vault.associateToken(USDC, { gasPrice });
     await tx0.wait();
   } catch (e) {
     console.log("Vault associate error or already associated");
   }
 
   try {
-    const tx1 = await vault.associateToken(WHBAR);
+    const tx1 = await vault.associateToken(WHBAR, { gasPrice });
     await tx1.wait();
   } catch (e) {
     console.log("Vault associate WHBAR error or already associated");
@@ -79,7 +81,7 @@ async function main() {
       [WHBAR, USDC],
       employerWallet.address,
       deadline,
-      { value: ethers.parseEther("2") }, // Spend 2 HBAR
+      { value: ethers.parseEther("2"), gasPrice }, // Spend 2 HBAR
     );
     console.log(`Bought USDC! Tx: https://hashscan.io/testnet/transaction/${txBuy.hash}`);
     await txBuy.wait();
@@ -99,19 +101,19 @@ async function main() {
 
   if (balance > 0) {
     console.log("Approving vault...");
-    const txApprove = await usdcContract.approve(artifact.address, balance);
+    const txApprove = await usdcContract.approve(artifact.address, balance, { gasPrice });
     console.log(`Approve Tx: https://hashscan.io/testnet/transaction/${txApprove.hash}`);
     await txApprove.wait();
 
     console.log("Creating Plan A...");
     const rate = balance / 2n; // Give half to A, half to B
-    const txPlanA = await vault.createPlan(empAWallet.address, USDC, rate / 600n, 600n);
+    const txPlanA = await vault.createPlan(empAWallet.address, USDC, rate / 600n, 600n, { gasPrice });
     console.log(`Create Plan A Tx: https://hashscan.io/testnet/transaction/${txPlanA.hash}`);
     const receiptA = await txPlanA.wait();
     const planIdA = receiptA.logs[0].args[0];
 
     console.log("Funding Plan A...");
-    const txFundA = await vault.fundPlan(planIdA, rate);
+    const txFundA = await vault.fundPlan(planIdA, rate, { gasPrice });
     console.log(`Fund Plan A Tx: https://hashscan.io/testnet/transaction/${txFundA.hash}`);
     await txFundA.wait();
 
@@ -122,35 +124,25 @@ async function main() {
     const vaultEmpA = vault.connect(empAWallet);
     // Note: Emp A has 0 HBAR for gas. We must send gas.
     await employerWallet
-      .sendTransaction({ to: empAWallet.address, value: ethers.parseEther("2") })
+      .sendTransaction({ to: empAWallet.address, value: ethers.parseEther("2"), gasPrice })
       .then(tx => tx.wait());
 
-    // We also need to associate USDC to EmpA before they can receive USDC!
-    // But since it's an ethers wallet, it has no `0.0.x` account ID unless we use the mirror node to find it,
-    // OR we just execute associate via Hedera SDK. Wait, ethers wallets on testnet are hollow accounts.
-    // A hollow account MUST be associated with the token to receive it! Wait, EIP-2930 / Hedera auto-association
-    // might kick in if the vault sends them USDC and they have open auto-association slots. Hollow accounts get 1 auto-association slot by default.
-    // Let's rely on auto-association.
-
-    const txClaimA = await vaultEmpA.claim(planIdA, false, 0);
+    const txClaimA = await vaultEmpA.claim(planIdA, false, 0, { gasPrice });
     console.log(`Employee A Claim Tx: https://hashscan.io/testnet/transaction/${txClaimA.hash}`);
     await txClaimA.wait();
 
-    // Do Plan B with swap to HBAR! (Swap to HBAR does NOT require token association for the employee because they get native HBAR!)
-    console.log("Creating Plan B...");
-    const txPlanB = await vault.createPlan(empBWallet.address, USDC, rate / 600n, 600n);
+    console.log("Creating Plan B for Employee A...");
+    const txPlanB = await vault.createPlan(empAWallet.address, USDC, rate / 600n, 600n, { gasPrice });
     const receiptB = await txPlanB.wait();
     const planIdB = receiptB.logs[0].args[0];
-    await vault.fundPlan(planIdB, rate).then(tx => tx.wait());
+    await vault.fundPlan(planIdB, rate, { gasPrice }).then(tx => tx.wait());
 
-    await employerWallet
-      .sendTransaction({ to: empBWallet.address, value: ethers.parseEther("2") })
-      .then(tx => tx.wait());
+    console.log("Waiting 10 seconds for accrual for Plan B...");
+    await new Promise(r => setTimeout(r, 10000));
 
-    console.log("Employee B Claiming with swap...");
-    const vaultEmpB = vault.connect(empBWallet);
-    const txClaimB = await vaultEmpB.claim(planIdB, true, 0);
-    console.log(`Employee B Swap Claim Tx: https://hashscan.io/testnet/transaction/${txClaimB.hash}`);
+    console.log("Employee A Claiming Plan B with swap...");
+    const txClaimB = await vaultEmpA.claim(planIdB, true, 0, { gasLimit: 2000000, gasPrice });
+    console.log(`Employee Swap Claim Tx: https://hashscan.io/testnet/transaction/${txClaimB.hash}`);
     await txClaimB.wait();
 
     console.log("All done!");
