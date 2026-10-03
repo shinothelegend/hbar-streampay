@@ -30,7 +30,7 @@ export async function GET() {
             consensusTimestamp: m.consensus_timestamp,
             payload: parsed,
           };
-        } catch (e) {
+        } catch {
           return null;
         }
       })

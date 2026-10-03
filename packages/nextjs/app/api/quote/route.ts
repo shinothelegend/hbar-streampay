@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createPublicClient, http, parseUnits } from "viem";
+import { createPublicClient, http } from "viem";
 import { hederaTestnet } from "viem/chains";
 
 const routerAbi = [
